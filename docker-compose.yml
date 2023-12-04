@@ -1,1 +1,26 @@
-services: 
+version: '3.8'
+services:
+  web:
+    image: php:7.4-apache
+    ports:
+      - "8080:80"
+    volumes:
+      - ./PHP:/var/www/html
+    depends_on:
+      - db
+    command: "/bin/sh -c 'docker-php-ext-install mysqli && exec apache2-foreground'"
+
+
+  glpi:
+  image: driket54/glpi
+  ports:
+    - "8090:80"
+  links:
+    - mysql:db
+  env_file:
+    - ./glpi.env
+
+mysql:
+  image: mariadb
+  env_file:
+    - ./glpi.env
